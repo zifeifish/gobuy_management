@@ -1,0 +1,56 @@
+/* 初始化样式代码 */
+body,
+div,
+p,
+span,
+input,
+img,
+a,
+ul,
+li,
+em,
+strong,
+del,
+i,
+ins,
+h1,
+h2,
+h3 {
+  margin: 0;
+  padding: 0;
+}
+a {
+  text-decoration: none;
+  color: #000;
+}
+img {
+  border: 0;
+  vertical-align: middle;
+}
+input {
+  border: none;
+  outline: none;
+}
+li {
+  list-style: none;
+}
+i {
+  font-style: normal;
+}
+body {
+  font-size: 12px;
+  line-height: 1;
+}
+.clearfix::after {
+  content: ".";
+  clear: both;
+  height: 0;
+  display: block;
+  visibility: hidden;
+}
+.clearfix {
+  *zoom: 1;
+}
+.w {
+  width: 1024px;
+}
