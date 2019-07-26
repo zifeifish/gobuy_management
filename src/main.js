@@ -7,6 +7,9 @@ Vue.config.productionTip = false
 import VueRouter from 'vue-router';
 Vue.use(VueRouter);
 
+// 导入 base.css 样式
+import './assets/css/base.css';
+
 // 1.注册组件
 import login from './components/login.vue'; // 登录组件
 import index from './components/index.vue'; // 后台组件
