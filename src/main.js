@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import App from './App.vue';
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
 // 导入 vue-router 模块
 import VueRouter from 'vue-router';
