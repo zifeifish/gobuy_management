@@ -7,6 +7,11 @@ Vue.config.productionTip = false
 import VueRouter from 'vue-router';
 Vue.use(VueRouter);
 
+// 导入 ElementUI 模块
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
+Vue.use(ElementUI);
+
 // 导入 base.css 样式
 import './assets/css/base.css';
 
