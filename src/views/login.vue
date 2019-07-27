@@ -53,7 +53,6 @@ export default {
       this.$refs[formName].validate(valid => {
         // 表单规则验证成功后执行
         if (valid) {
-
           // 发送ajax验证登录
           http.login(this.ruleForm).then(backData => {
             console.log(backData);
@@ -61,8 +60,10 @@ export default {
             if (backData.data.meta.status == 200) {
               // 登录成功
               this.$message.success(backData.data.meta.msg);
+              // 将token存储到sessionStorage
+              window.sessionStorage.setItem('token',backData.data.data.token);
               // 编程式导航到首页
-              this.$router.push('/index');
+              this.$router.push("/index");
             } else {
               // 登录失败
               this.$message.error(backData.data.meta.msg);
