@@ -9,13 +9,13 @@
         ref="ruleForm"
         label-width="100px"
         class="demo-ruleForm"
-        label-position='top'
+        label-position="top"
       >
-        <el-form-item label="用户名" prop="pass">
-          <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
+        <el-form-item label="用户名" prop="username">
+          <el-input type="text" v-model="ruleForm.username" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="密码" prop="checkPass">
-          <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
+        <el-form-item label="密码" prop="password">
+          <el-input type="password" v-model="ruleForm.password" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="submitForm('ruleForm')" class="btn_sub">提交</el-button>
@@ -26,78 +26,40 @@
 </template>
 
 <script>
-  export default {
-    data() {
-      var checkAge = (rule, value, callback) => {
-        if (!value) {
-          return callback(new Error('年龄不能为空'));
-        }
-        setTimeout(() => {
-          if (!Number.isInteger(value)) {
-            callback(new Error('请输入数字值'));
-          } else {
-            if (value < 18) {
-              callback(new Error('必须年满18岁'));
-            } else {
-              callback();
-            }
-          }
-        }, 1000);
-      };
-      var validatePass = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请输入密码'));
-        } else {
-          if (this.ruleForm.checkPass !== '') {
-            this.$refs.ruleForm.validateField('checkPass');
-          }
-          callback();
-        }
-      };
-      var validatePass2 = (rule, value, callback) => {
-        if (value === '') {
-          callback(new Error('请再次输入密码'));
-        } else if (value !== this.ruleForm.pass) {
-          callback(new Error('两次输入密码不一致!'));
-        } else {
-          callback();
-        }
-      };
-      return {
-        ruleForm: {
-          pass: '',
-          checkPass: '',
-          age: ''
-        },
-        rules: {
-          pass: [
-            { validator: validatePass, trigger: 'blur' }
-          ],
-          checkPass: [
-            { validator: validatePass2, trigger: 'blur' }
-          ],
-          age: [
-            { validator: checkAge, trigger: 'blur' }
-          ]
-        }
-      };
-    },
-    methods: {
-      submitForm(formName) {
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            alert('submit!');
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        });
+export default {
+  data() {
+    return {
+      ruleForm: {
+        username: "",
+        password: ""
       },
-      resetForm(formName) {
-        this.$refs[formName].resetFields();
+      rules: {
+        // 用户验证规则  required
+        username: [
+          { required: true, message: "请输入用户名", trigger: "blur" }
+        ],
+        // 密码验证规则
+        password: [
+          { required: true, message: "请输入密码", trigger: "blur" },
+          { min: 6, message: "密码长度最少为6位", trigger: "change" }
+        ]
       }
+    };
+  },
+  methods: {
+    submitForm(formName) {
+      this.$refs[formName].validate(valid => {
+        // 表单规则验证成功后执行
+        if (valid) {
+          alert("submit!");
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
     }
   }
+};
 </script>
 
 
@@ -120,10 +82,10 @@
     border-radius: 10px;
     background-color: #fff;
     padding: 40px;
-    h2{
+    h2 {
       margin-bottom: 30px;
     }
-    .btn_sub{
+    .btn_sub {
       width: 100%;
     }
   }
