@@ -87,18 +87,7 @@
 </template>
 
 <script>
-export default {
-  created() {
-    // 判断sessionStorage中是否有token
-    if (window.sessionStorage.getItem("token")) {
-      return;
-    } else {
-      this.$message.error("请先登录");
-      // 编程式导航到首页
-      this.$router.push("/login");
-    }
-  }
-};
+export default {};
 </script>
 
 <style lang='less' scoped>

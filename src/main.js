@@ -12,7 +12,7 @@ Vue.use(ElementUI);
 import './assets/css/base.less';
 
 // 导入抽取的router
-import router from './router/router'
+import router from './route/router'
 
 // 4.挂载路由
 new Vue({
