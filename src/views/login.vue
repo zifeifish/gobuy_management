@@ -26,6 +26,8 @@
 </template>
 
 <script>
+// 导入 抽取的axios  名字导出的要用{}
+import { http } from "../api/http.js";
 export default {
   data() {
     return {
@@ -51,7 +53,21 @@ export default {
       this.$refs[formName].validate(valid => {
         // 表单规则验证成功后执行
         if (valid) {
-          alert("submit!");
+
+          // 发送ajax验证登录
+          http.login(this.ruleForm).then(backData => {
+            console.log(backData);
+
+            if (backData.data.meta.status == 200) {
+              // 登录成功
+              this.$message.success(backData.data.meta.msg);
+              // 编程式导航到首页
+              this.$router.push('/index');
+            } else {
+              // 登录失败
+              this.$message.error(backData.data.meta.msg);
+            }
+          });
         } else {
           console.log("error submit!!");
           return false;
