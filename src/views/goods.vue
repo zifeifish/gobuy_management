@@ -21,7 +21,10 @@
       <el-table-column prop="address" label="商品价格（元）" width="140"></el-table-column>
       <el-table-column prop="lev" label="商品重量" width="100"></el-table-column>
       <el-table-column prop="lev" label="创建时间" width="140"></el-table-column>
-      <el-table-column prop="lev" label="操作" ></el-table-column>
+      <el-table-column prop="lev" label="操作">
+        <el-button type="primary" icon="el-icon-edit" plain size="mini"></el-button>
+        <el-button type="danger" icon="el-icon-delete" plain size="mini"></el-button>
+      </el-table-column>
     </el-table>
   </div>
 </template>

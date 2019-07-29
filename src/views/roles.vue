@@ -7,9 +7,13 @@
     <el-table :data="tableData" border style="width: 100%">
       <el-table-column prop="arrow" width="40"></el-table-column>
       <el-table-column prop="id" label="#" width="40"></el-table-column>
-      <el-table-column prop="date" label="角色名称" width="180"></el-table-column>
-      <el-table-column prop="name" label="角色描述" width="180"></el-table-column>
-      <el-table-column prop="address" label="操作"></el-table-column>
+      <el-table-column prop="date" label="角色名称" width="380"></el-table-column>
+      <el-table-column prop="name" label="角色描述" width="380"></el-table-column>
+      <el-table-column prop="address" label="操作">
+        <el-button type="primary" icon="el-icon-edit" plain size="mini"></el-button>
+        <el-button type="danger" icon="el-icon-delete" plain size="mini"></el-button>
+        <el-button type="warning" icon="el-icon-check" plain size="mini"></el-button>
+      </el-table-column>
     </el-table>
   </div>
 </template>

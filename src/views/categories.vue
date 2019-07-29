@@ -8,7 +8,10 @@
       <el-table-column prop="date" label="分类名称" width="340"></el-table-column>
       <el-table-column prop="address" label="级别" width="180"></el-table-column>
       <el-table-column prop="lev" label="是否有效" width="180"></el-table-column>
-      <el-table-column prop="lev" label="操作"></el-table-column>
+      <el-table-column prop="lev" label="操作">
+        <el-button type="primary" icon="el-icon-edit" plain size="mini"></el-button>
+        <el-button type="danger" icon="el-icon-delete" plain size="mini"></el-button>
+      </el-table-column>
     </el-table>
   </div>
 </template>
@@ -17,7 +20,20 @@
 export default {
   data() {
     return {
-      tableData: []
+      tableData: [
+        {
+          id: 1,
+          date: "商品管理",
+          address: "goods",
+          lev: "一级"
+        },
+        {
+          id: 2,
+          date: "商品管理",
+          address: "goods",
+          lev: "一级"
+        }
+      ]
     };
   }
 };

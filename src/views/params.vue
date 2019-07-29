@@ -15,12 +15,11 @@
         v-model="value"
         :options="options"
         :props="{ expandTrigger: 'hover' }"
-        @change="handleChange"
       ></el-cascader>
     </div>
     <!-- 标签页 -->
-    <el-tabs v-model="activeName" @tab-click="handleClick" class="my_tag">
-        <!-- 禁用按钮 -->
+    <el-tabs v-model="activeName" class="my_tag">
+      <!-- 禁用按钮 -->
       <el-button type="primary" disabled class="not_btn">添加动态参数</el-button>
       <el-tab-pane label="动态数据" name="first">
         <!-- 动态数据表格栏 -->
@@ -48,6 +47,7 @@
 export default {
   data() {
     return {
+      tableData: [],
       activeName: "first",
       value: [],
       options: [

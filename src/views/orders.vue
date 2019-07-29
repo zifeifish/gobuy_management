@@ -7,10 +7,14 @@
       <el-table-column prop label="#" width="40"></el-table-column>
       <el-table-column prop label="订单编号" width="300"></el-table-column>
       <el-table-column prop label="订单价格" width="100"></el-table-column>
-      <el-table-column prop label="是否付款" width="100"></el-table-column>
+      <el-table-column prop label="是否付款" width="100">
+        <el-button type="danger" plain size="mini">未付款</el-button>
+      </el-table-column>
       <el-table-column prop label="是否发货" width="180"></el-table-column>
       <el-table-column prop label="下单时间" width="180"></el-table-column>
-      <el-table-column prop label="操作"></el-table-column>
+      <el-table-column prop label="操作">
+        <el-button type="primary" icon="el-icon-edit" plain size="mini"></el-button>
+      </el-table-column>
     </el-table>
   </div>
 </template>

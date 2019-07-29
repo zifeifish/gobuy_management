@@ -18,10 +18,22 @@
     <el-table :data="tableData" border style="width: 100%">
       <el-table-column prop="id" label="#" width="40"></el-table-column>
       <el-table-column prop="name" label="姓名" width="160"></el-table-column>
-      <el-table-column prop="email" label="邮箱" width="200"></el-table-column>
-      <el-table-column prop="tel" label="电话" width="180"></el-table-column>
-      <el-table-column prop="status" label="用户状态" width="80"></el-table-column>
-      <el-table-column prop="option" label="操作"></el-table-column>
+      <el-table-column prop="email" label="邮箱" width="300"></el-table-column>
+      <el-table-column prop="tel" label="电话" width="280"></el-table-column>
+      <el-table-column prop="status" label="用户状态" width="80">
+        <!-- 开关 -->
+        <el-switch
+          v-model="value"
+          active-color="#13ce66"
+          inactive-color="#ff4949"
+          @change="handleChange"
+        ></el-switch>
+      </el-table-column>
+      <el-table-column prop="option" label="操作">
+        <el-button type="primary" icon="el-icon-edit" plain size="mini"></el-button>
+        <el-button type="danger" icon="el-icon-delete" plain size="mini"></el-button>
+        <el-button type="warning" icon="el-icon-check" plain size="mini"></el-button>
+      </el-table-column>
     </el-table>
     <!-- 分页 -->
     <el-pagination
@@ -40,6 +52,7 @@
 export default {
   data() {
     return {
+      
       tableData: [
         {
           id: 1,
@@ -57,12 +70,16 @@ export default {
           status: "",
           option: ""
         }
-      ]
+      ],
+      value: true,
     };
   },
   methods: {
     handleSizeChange() {},
-    handleCurrentChange() {}
+    handleCurrentChange() {},
+    handleChange(val) {
+      console.log(val);
+    }
   }
 };
 </script>
