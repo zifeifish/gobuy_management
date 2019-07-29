@@ -12,7 +12,9 @@ import { Message } from 'element-ui';
 import login from '../views/login.vue'; // 登录组件
 import index from '../views/index.vue'; // 后台组件
 import users from '../views/users.vue'; // 用户管理-user组件
-import roles from '../views/roles.vue'; // 用户管理-user组件
+import roles from '../views/roles.vue'; // 权限管理-roles组件
+import rights from '../views/rights.vue'; // 权限管理-rights组件
+import goods from '../views/goods.vue'; // 商品管理-rights组件
 import bread from '../components/bread.vue'; // 面包屑导航组件
 // 注册成全局组件
 Vue.component('bread', bread);
@@ -31,6 +33,8 @@ const routes = [
         children: [
             { path: '/users', component: users },
             { path: '/roles', component: roles },
+            { path: '/rights', component: rights },
+            { path: '/goods', component: goods },
         ]
     },
 ];
