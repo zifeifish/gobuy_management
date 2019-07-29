@@ -1,12 +1,7 @@
 <template>
   <div>
     <!-- 面包屑导航栏 -->
-    <el-breadcrumb separator-class="el-icon-arrow-right" class="my_bread">
-      <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>活动管理</el-breadcrumb-item>
-      <el-breadcrumb-item>活动列表</el-breadcrumb-item>
-      <el-breadcrumb-item>活动详情</el-breadcrumb-item>
-    </el-breadcrumb>
+    <bread first='权限管理' second='角色列表'></bread>
     <!-- 搜索框 -->
     <el-col>
       <!-- layout布局 -->

@@ -12,6 +12,9 @@ import { Message } from 'element-ui';
 import login from '../views/login.vue'; // 登录组件
 import index from '../views/index.vue'; // 后台组件
 import users from '../views/users.vue'; // 用户管理-user组件
+import bread from '../components/bread.vue'; // 面包屑导航组件
+// 注册成全局组件
+Vue.component('bread', bread);
 
 // 2.配置路由规则
 const routes = [

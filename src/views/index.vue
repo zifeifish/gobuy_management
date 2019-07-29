@@ -8,25 +8,23 @@
     <el-container>
       <el-aside width="200px" class="aside">
         <!-- 侧栏导航 -->
-        <el-row class="tac">
-          <el-menu 
-          default-active="2" 
-          class="el-menu-vertical-demo" 
+        <el-menu
+          default-active="2"
+          class="el-menu-vertical-demo"
           :unique-opened="true"
           :router="true"
-          >
-            <el-submenu v-for="(item,index) in munesList" :key="index" :index="''+index">
-              <template slot="title">
-                <i class="el-icon-location"></i>
-                <span>{{item.authName}}</span>
-              </template>
-              <el-menu-item v-for="(it,num) in item.children" :key="num" :index="it.path">
-                <i class="el-icon-menu"></i>
-                {{it.authName}}
-              </el-menu-item>
-            </el-submenu>
-          </el-menu>
-        </el-row>
+        >
+          <el-submenu v-for="(item,index) in munesList" :key="index" :index="''+index">
+            <template slot="title">
+              <i class="el-icon-location"></i>
+              <span>{{item.authName}}</span>
+            </template>
+            <el-menu-item v-for="(it,num) in item.children" :key="num" :index="it.path">
+              <i class="el-icon-menu"></i>
+              {{it.authName}}
+            </el-menu-item>
+          </el-submenu>
+        </el-menu>
       </el-aside>
       <el-main class="my_main">
         <router-view></router-view>
