@@ -11,7 +11,7 @@ import { Message } from 'element-ui';
 // 1.注册组件
 import login from '../views/login.vue'; // 登录组件
 import index from '../views/index.vue'; // 后台组件
-import user from '../views/user.vue'; // 用户管理-user组件
+import users from '../views/users.vue'; // 用户管理-user组件
 
 // 2.配置路由规则
 const routes = [
@@ -21,9 +21,10 @@ const routes = [
     {
         path: '/index',
         component: index,
+        // 设置路由元信息
         meta: { isLogin: true },
-        children:[
-            {path:'/user',component:user}
+        children: [
+            { path: '/users', component: users },
         ]
     },
 ];
@@ -36,6 +37,7 @@ const router = new VueRouter({
 
 // 4.注册全局导航守卫 判断登录
 router.beforeEach((to, from, next) => {
+    // 检查路由元信息
     if (to.meta.isLogin) {
         // 判断localStorage中是否有token
         if (window.localStorage.getItem("token")) {
