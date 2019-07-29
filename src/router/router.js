@@ -5,7 +5,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 Vue.use(VueRouter);
 
-// 导入element-ui
+// 导入element-ui  Message
 import { Message } from 'element-ui';
 
 // 1.注册组件
@@ -17,7 +17,11 @@ const routes = [
     // 重定向
     { path: '/', redirect: '/login' },
     { path: '/login', component: login },
-    { path: '/index', component: index },
+    {
+        path: '/index',
+        component: index,
+        meta: { isLogin: true }
+    },
 ];
 
 
@@ -26,11 +30,11 @@ const router = new VueRouter({
     routes
 });
 
-// 注册全局导航守卫 判断登录
+// 4.注册全局导航守卫 判断登录
 router.beforeEach((to, from, next) => {
-    if (to.path.indexOf('index') != -1) {
-        // 判断sessionStorage中是否有token
-        if (window.sessionStorage.getItem("token")) {
+    if (to.meta.isLogin) {
+        // 判断localStorage中是否有token
+        if (window.localStorage.getItem("token")) {
             next();
         } else {
             Message.error("请先登录");
@@ -42,5 +46,5 @@ router.beforeEach((to, from, next) => {
     }
 });
 
-// 4.导出 router
+// 5.导出 router
 export default router;

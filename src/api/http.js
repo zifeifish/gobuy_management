@@ -1,5 +1,5 @@
 // 导入axios模块
-import axios from 'axios'
+import axios from 'axios';
 
 // 多基地址设置
 export const http = axios.create({

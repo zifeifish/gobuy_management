@@ -27,7 +27,7 @@
 
 <script>
 // 导入 抽取的axios  名字导出的要用{}
-import { http } from "../api/http.js";
+import { http } from "../api/http";
 export default {
   data() {
     return {
@@ -60,8 +60,8 @@ export default {
             if (backData.data.meta.status == 200) {
               // 登录成功
               this.$message.success(backData.data.meta.msg);
-              // 将token存储到sessionStorage
-              window.sessionStorage.setItem('token',backData.data.data.token);
+              // 将token存储到localStorage
+              window.localStorage.setItem('token',backData.data.data.token);
               // 编程式导航到首页
               this.$router.push("/index");
             } else {
