@@ -9,85 +9,49 @@
       <el-aside width="200px" class="aside">
         <!-- 侧栏导航 -->
         <el-row class="tac">
-          <el-menu
-            default-active="2"
-            class="el-menu-vertical-demo"
-            unique-opened="true"
-            @open="handleOpen"
-            @close="handleClose"
+          <el-menu 
+          default-active="2" 
+          class="el-menu-vertical-demo" 
+          :unique-opened="true"
+          :router="true"
           >
-            <el-submenu index="1">
+            <el-submenu v-for="(item,index) in munesList" :key="index" :index="''+index">
               <template slot="title">
                 <i class="el-icon-location"></i>
-                <span>用户管理</span>
+                <span>{{item.authName}}</span>
               </template>
-              <el-menu-item index="1-1">
+              <el-menu-item v-for="(it,num) in item.children" :key="num" :index="it.path">
                 <i class="el-icon-menu"></i>
-                用户列表
-              </el-menu-item>
-            </el-submenu>
-            <el-submenu index="2">
-              <template slot="title">
-                <i class="el-icon-location"></i>
-                <span>权限管理</span>
-              </template>
-              <el-menu-item index="2-1">
-                <i class="el-icon-menu"></i>
-                <span slot="title">角色列表</span>
-              </el-menu-item>
-              <el-menu-item index="2-2">
-                <i class="el-icon-menu"></i>
-                权限列表
-              </el-menu-item>
-            </el-submenu>
-            <el-submenu index="3">
-              <template slot="title">
-                <i class="el-icon-location"></i>
-                <span>商品管理</span>
-              </template>
-              <el-menu-item index="3-1">
-                <i class="el-icon-menu"></i>
-                <span slot="title">商品列表</span>
-              </el-menu-item>
-              <el-menu-item index="3-2">
-                <i class="el-icon-menu"></i>
-                <span slot="title">分类参数</span>
-              </el-menu-item>
-              <el-menu-item index="3-3">
-                <i class="el-icon-menu"></i>
-                <span slot="title">商品分类</span>
-              </el-menu-item>
-            </el-submenu>
-            <el-submenu index="4">
-              <template slot="title">
-                <i class="el-icon-location"></i>
-                <span>订单管理</span>
-              </template>
-              <el-menu-item index="4-1">
-                <i class="el-icon-menu"></i>
-                <span slot="title">订单列表</span>
-              </el-menu-item>
-            </el-submenu>
-            <el-submenu index="5">
-              <template slot="title">
-                <i class="el-icon-location"></i>
-                <span>数据统计</span>
-              </template>
-              <el-menu-item index="5-1">
-                <i class="el-icon-menu"></i>
-                <span slot="title">数据报表</span>
+                {{it.authName}}
               </el-menu-item>
             </el-submenu>
           </el-menu>
         </el-row>
       </el-aside>
-      <el-main class="my_main">Main</el-main>
+      <el-main class="my_main">
+        <router-view></router-view>
+      </el-main>
     </el-container>
   </el-container>
 </template>
 
 <script>
-export default {};
+// 导入抽取的axios
+import { http } from "../api/http.js";
+export default {
+  data() {
+    return {
+      //左侧导航列表
+      munesList: []
+    };
+  },
+  created() {
+    http.menus().then(backData => {
+      console.log(backData);
+      this.munesList = backData.data.data;
+    });
+  }
+};
 </script>
 
 <style lang='less' scoped>
@@ -105,7 +69,7 @@ export default {};
     // 次轴对其方式
     align-items: center;
     img {
-      width: 170px;
+      width: 160px;
       height: 60px;
     }
     h2 {

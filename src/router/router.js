@@ -11,6 +11,7 @@ import { Message } from 'element-ui';
 // 1.注册组件
 import login from '../views/login.vue'; // 登录组件
 import index from '../views/index.vue'; // 后台组件
+import user from '../views/user.vue'; // 用户管理-user组件
 
 // 2.配置路由规则
 const routes = [
@@ -20,7 +21,10 @@ const routes = [
     {
         path: '/index',
         component: index,
-        meta: { isLogin: true }
+        meta: { isLogin: true },
+        children:[
+            {path:'/user',component:user}
+        ]
     },
 ];
 
