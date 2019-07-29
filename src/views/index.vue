@@ -13,6 +13,7 @@
           class="el-menu-vertical-demo"
           :unique-opened="true"
           :router="true"
+          active-text-color="#409EFF"
         >
           <el-submenu v-for="(item,index) in munesList" :key="index" :index="''+index">
             <template slot="title">
@@ -21,7 +22,7 @@
             </template>
             <el-menu-item v-for="(it,num) in item.children" :key="num" :index="it.path">
               <i class="el-icon-menu"></i>
-              {{it.authName}}
+              <span>{{it.authName}}</span>
             </el-menu-item>
           </el-submenu>
         </el-menu>
@@ -83,6 +84,7 @@ export default {
     background-color: #fff;
   }
   .my_main {
+    padding-top: 0px;
     background-color: #e9eef3;
   }
 }

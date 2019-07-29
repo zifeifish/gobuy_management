@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 面包屑导航栏 -->
-    <bread first="权限管理" second="角色列表"></bread>
+    <bread first="用户管理" second="用户列表"></bread>
     <!-- 搜索框 -->
     <el-col>
       <!-- layout布局 -->
@@ -16,9 +16,12 @@
     </el-col>
     <!-- 表格栏 -->
     <el-table :data="tableData" border style="width: 100%">
-      <el-table-column prop="date" label="日期" width="180"></el-table-column>
-      <el-table-column prop="name" label="姓名" width="180"></el-table-column>
-      <el-table-column prop="address" label="地址"></el-table-column>
+      <el-table-column prop="id" label="#" width="40"></el-table-column>
+      <el-table-column prop="name" label="姓名" width="160"></el-table-column>
+      <el-table-column prop="email" label="邮箱" width="200"></el-table-column>
+      <el-table-column prop="tel" label="电话" width="180"></el-table-column>
+      <el-table-column prop="status" label="用户状态" width="80"></el-table-column>
+      <el-table-column prop="option" label="操作"></el-table-column>
     </el-table>
     <!-- 分页 -->
     <el-pagination
@@ -39,22 +42,28 @@ export default {
     return {
       tableData: [
         {
-          date: "2016-05-02",
+          id: 1,
           name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
+          email: "adsfad@qq.com",
+          tel: "666",
+          status: "正常",
+          option: ""
         },
         {
-          date: "2016-05-02",
+          id: 2,
           name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
+          email: "",
+          tel: "",
+          status: "",
+          option: ""
         }
       ]
     };
   },
   methods: {
-    handleSizeChange(){},
-    handleCurrentChange(){}
-  },
+    handleSizeChange() {},
+    handleCurrentChange() {}
+  }
 };
 </script>
 
