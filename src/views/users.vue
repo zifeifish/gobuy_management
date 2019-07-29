@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 面包屑导航栏 -->
-    <bread first='权限管理' second='角色列表'></bread>
+    <bread first="权限管理" second="角色列表"></bread>
     <!-- 搜索框 -->
     <el-col>
       <!-- layout布局 -->
@@ -20,6 +20,16 @@
       <el-table-column prop="name" label="姓名" width="180"></el-table-column>
       <el-table-column prop="address" label="地址"></el-table-column>
     </el-table>
+    <!-- 分页 -->
+    <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="1"
+      :page-sizes="[5, 10, 15, 20]"
+      :page-size="100"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="10"
+    ></el-pagination>
   </div>
 </template>
 
@@ -40,7 +50,11 @@ export default {
         }
       ]
     };
-  }
+  },
+  methods: {
+    handleSizeChange(){},
+    handleCurrentChange(){}
+  },
 };
 </script>
 
