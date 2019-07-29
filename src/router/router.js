@@ -15,6 +15,7 @@ import users from '../views/users.vue'; // 用户管理-user组件
 import roles from '../views/roles.vue'; // 权限管理-roles组件
 import rights from '../views/rights.vue'; // 权限管理-rights组件
 import goods from '../views/goods.vue'; // 商品管理-rights组件
+import params from '../views/params.vue'; // 商品管理-params组件
 import categories from '../views/categories.vue'; // 商品管理-categories组件
 import orders from '../views/orders.vue'; // 订单管理-orders组件
 import reports from '../views/reports.vue'; // 数据统计-reports组件
@@ -38,6 +39,7 @@ const routes = [
             { path: '/roles', component: roles },
             { path: '/rights', component: rights },
             { path: '/goods', component: goods },
+            { path: '/params', component: params },
             { path: '/categories', component: categories },
             { path: '/orders', component: orders },
             { path: '/reports', component: reports },
