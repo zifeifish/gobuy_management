@@ -15,6 +15,7 @@ import users from '../views/users.vue'; // 用户管理-user组件
 import roles from '../views/roles.vue'; // 权限管理-roles组件
 import rights from '../views/rights.vue'; // 权限管理-rights组件
 import goods from '../views/goods.vue'; // 商品管理-rights组件
+import categories from '../views/categories.vue'; // 商品管理-categories组件
 import bread from '../components/bread.vue'; // 面包屑导航组件
 // 注册成全局组件
 Vue.component('bread', bread);
@@ -35,6 +36,7 @@ const routes = [
             { path: '/roles', component: roles },
             { path: '/rights', component: rights },
             { path: '/goods', component: goods },
+            { path: '/categories', component: categories },
         ]
     },
 ];
