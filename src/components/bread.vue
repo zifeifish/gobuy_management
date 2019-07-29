@@ -16,8 +16,8 @@ export default {
 
 <style lang='less' scoped>
 .my_bread {
-  height: 40px;
-  line-height: 40px;
+  height: 45px;
+  line-height: 45px;
   padding-left: 10px;
   background-color: #d3dce6;
 }
