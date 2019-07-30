@@ -62,6 +62,11 @@ http.putEditUsers = (id, { email, mobile }) => {
     });
 };
 
+// 删除用户 users/id
+http.deleteUsers = (id) => {
+    return http.delete('users/' + id);
+};
+
 // 添加请求拦截器
 http.interceptors.request.use(function (config) {
     // 在发送请求之前做些什么

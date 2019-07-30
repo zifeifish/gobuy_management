@@ -41,7 +41,13 @@
             size="mini"
             @click="editUsers(scope.row.id)"
           ></el-button>
-          <el-button type="danger" icon="el-icon-delete" plain size="mini"></el-button>
+          <el-button
+            type="danger"
+            icon="el-icon-delete"
+            plain
+            size="mini"
+            @click="open(scope.row.id)"
+          ></el-button>
           <el-button type="warning" icon="el-icon-check" plain size="mini"></el-button>
         </template>
       </el-table-column>
@@ -194,13 +200,12 @@ export default {
         this.editForm = backData.data.data;
       });
     },
-    // 表单验证
+    // 添加用户 表单验证
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           // 表单验证成功 发送ajax 添加用户
           http.addUsers(this.form).then(backData => {
-            console.log(backData);
             if (backData.data.meta.status == 201) {
               // 提示添加成功
               this.$message.success(backData.data.meta.msg);
@@ -219,12 +224,12 @@ export default {
         }
       });
     },
+    // 编辑用户 提交
     editSubmit() {
       // this.$message.success('修改成功');
       // 发送ajax 提交编辑后的用户信息
       const id = this.editForm.id;
-      http.putEditUsers(id,this.editForm).then(backData => {
-        console.log(backData);
+      http.putEditUsers(id, this.editForm).then(backData => {
         if (backData.data.meta.status == 200) {
           // 提更新成功
           this.$message.success(backData.data.meta.msg);
@@ -237,6 +242,31 @@ export default {
           this.$message.error(backData.data.meta.msg);
         }
       });
+    },
+    // 删除单个用户信息
+    open(id) {
+      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          // 发送ajax请求 删除用户信息
+          http.deleteUsers(id).then(backData => {
+            if (backData.data.meta.status == 200) {
+              //提示删除成功
+              this.$message.success(backData.data.meta.msg);
+              // 刷新页面
+              this.getUsersData();
+            }
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
+        });
     }
   },
   created() {
