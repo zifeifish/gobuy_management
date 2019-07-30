@@ -6,8 +6,13 @@
     <el-col>
       <!-- layout布局 -->
       <el-col :span="6">
-        <el-input placeholder="请输入内容" class="input-with-select">
-          <el-button slot="append" icon="el-icon-search"></el-button>
+        <el-input 
+        placeholder="请输入内容" 
+        class="input-with-select" 
+        v-model.trim="usersData.query"
+        @keyup.enter.native="getUsersData()"
+        >
+          <el-button slot="append" icon="el-icon-search" @click="search()"></el-button>
         </el-input>
       </el-col>
       <el-col :span="12">
@@ -43,7 +48,7 @@
       :page-sizes="[3, 5,10]"
       :page-size="usersData.pagesize"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="total"
+      :total='total'
     ></el-pagination>
 
     <!-- 添加用户弹出框 -->
@@ -79,9 +84,9 @@ export default {
     return {
       // 用户列表查询参数
       usersData: {
-        query: "",
-        pagenum: 1,
-        pagesize: 3
+        query: "", // 查询参数
+        pagenum: 1, // 当前页
+        pagesize: 3 // 每页条数
       },
       // 数据总条数
       total: "",
@@ -124,6 +129,11 @@ export default {
     handleCurrentChange(pagenum) {
       // 修改当前页码
       this.usersData.pagenum = pagenum;
+      this.getUsersData();
+    },
+    // 搜索框
+    search() {
+      // 获取数据
       this.getUsersData();
     }
   },
