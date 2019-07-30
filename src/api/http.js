@@ -23,6 +23,11 @@ http.menus = () => {
     return http.get('menus')
 };
 
+// 抽取 rights
+http.rights = () => {
+    return http.get('rights/list')
+};
+
 // 添加请求拦截器
 http.interceptors.request.use(function (config) {
     // 在发送请求之前做些什么
