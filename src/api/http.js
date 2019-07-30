@@ -27,7 +27,8 @@ http.menus = () => {
 http.rights = () => {
     return http.get('rights/list')
 };
-// 抽取 用户列表 users
+
+// 抽取 查询用户列表 users
 http.users = ({ query, pagenum, pagesize }) => {
     return http.get('users', {
         params: {
@@ -35,6 +36,16 @@ http.users = ({ query, pagenum, pagesize }) => {
             pagenum,
             pagesize
         }
+    })
+};
+
+// 添加用户
+http.addUsers = ({ username, password, email, mobile }) => {
+    return http.post('users', {
+        username,
+        password,
+        email,
+        mobile,
     })
 };
 

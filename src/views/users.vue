@@ -6,11 +6,11 @@
     <el-col>
       <!-- layout布局 -->
       <el-col :span="6">
-        <el-input 
-        placeholder="请输入内容" 
-        class="input-with-select" 
-        v-model.trim="usersData.query"
-        @keyup.enter.native="getUsersData()"
+        <el-input
+          placeholder="请输入内容"
+          class="input-with-select"
+          v-model.trim="usersData.query"
+          @keyup.enter.native="getUsersData()"
         >
           <el-button slot="append" icon="el-icon-search" @click="search()"></el-button>
         </el-input>
@@ -48,30 +48,36 @@
       :page-sizes="[3, 5,10]"
       :page-size="usersData.pagesize"
       layout="total, sizes, prev, pager, next, jumper"
-      :total='total'
+      :total="total"
     ></el-pagination>
-
     <!-- 添加用户弹出框 -->
-    <!-- <el-dialog title="添加用户" :visible.sync="dialogFormVisible">
-          <el-form status-icon label-width="100px" class="demo-ruleForm" label-position="left">
-            <el-form-item label="用户名" prop>
-              <el-input type="text" autocomplete="off" :label-width="formLabelWidth"></el-input>
-            </el-form-item>
-            <el-form-item label="密码" prop="password">
-              <el-input type="password" autocomplete="off" :label-width="formLabelWidth"></el-input>
-            </el-form-item>
-            <el-form-item label="邮箱" prop="password">
-              <el-input type="email" autocomplete="off" :label-width="formLabelWidth"></el-input>
-            </el-form-item>
-            <el-form-item label="电话" prop="password">
-              <el-input type="tel" autocomplete="off" :label-width="formLabelWidth"></el-input>
-            </el-form-item>
-          </el-form>
-          <div slot="footer" class="dialog-footer">
-            <el-button @click="dialogFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
-          </div>
-    </el-dialog>-->
+    <el-dialog title="添加用户" :visible.sync="dialogFormVisible">
+      <el-form
+        :model="form"
+        :rules="rules"
+        ref="form"
+        label-width="70px"
+        class="demo-ruleForm"
+        label-position="right"
+      >
+        <el-form-item label="用户名" prop="username">
+          <el-input type="text" autocomplete="off" v-model="form.username"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" prop="password">
+          <el-input type="password" autocomplete="off" v-model="form.password"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input type="email" autocomplete="off" v-model="form.email"></el-input>
+        </el-form-item>
+        <el-form-item label="电话" prop="mobile">
+          <el-input type="tel" autocomplete="off" v-model="form.mobile"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submitForm('form')">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -93,19 +99,25 @@ export default {
       // 表格数据
       tableData: [],
       // 对话框参数
-      dialogTableVisible: false,
-      dialogFormVisible: false,
+      dialogFormVisible: false, // 默认隐藏
+      // 表单数据
       form: {
-        name: "",
-        region: "",
-        date1: "",
-        date2: "",
-        delivery: false,
-        type: [],
-        resource: "",
-        desc: ""
+        username: "",
+        password: "",
+        email: "",
+        mobile: ""
       },
-      formLabelWidth: "120px"
+      // 表单验证规则
+      rules: {
+        username: [
+          { required: true, message: "请输入用户", trigger: "blur" },
+          { min: 3, max: 6, message: "长度在 3 到 6 个字符", trigger: "blur" }
+        ],
+        password: [
+          { required: true, message: "请输入密码", trigger: "blur" },
+          { min: 6, max: 12, message: "长度在 6 到 12 个字符", trigger: "blur" }
+        ]
+      }
     };
   },
   methods: {
@@ -135,6 +147,31 @@ export default {
     search() {
       // 获取数据
       this.getUsersData();
+    },
+    // 表单验证
+    submitForm(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          // 表单验证成功 发送ajax 添加用户
+          http.addUsers(this.form).then(backData => {
+            console.log(backData);
+            if (backData.data.meta.status == 201) {
+              // 提示添加成功
+              this.$message.success(backData.data.meta.msg);
+              // 关闭对话框
+              this.dialogFormVisible = false;
+              // 更新页面数据
+              this.getUsersData();
+            } else {
+              // 提示 未添加成功信息
+              this.$message.error(backData.data.meta.msg);
+            }
+          });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
     }
   },
   created() {
