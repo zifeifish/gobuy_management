@@ -27,6 +27,16 @@ http.menus = () => {
 http.rights = () => {
     return http.get('rights/list')
 };
+// 抽取 用户列表 users
+http.users = ({ query, pagenum, pagesize }) => {
+    return http.get('users', {
+        params: {
+            query,
+            pagenum,
+            pagesize
+        }
+    })
+};
 
 // 添加请求拦截器
 http.interceptors.request.use(function (config) {

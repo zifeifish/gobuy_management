@@ -47,7 +47,6 @@ export default {
   created() {
     // 发送ajax获取 左侧导航栏菜单
     http.menus().then(backData => {
-      console.log(backData);
       this.munesList = backData.data.data;
     });
   }
