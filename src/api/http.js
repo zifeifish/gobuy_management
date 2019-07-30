@@ -28,7 +28,7 @@ http.rights = () => {
     return http.get('rights/list')
 };
 
-// 抽取 查询用户列表 users
+// 查询用户列表 users
 http.users = ({ query, pagenum, pagesize }) => {
     return http.get('users', {
         params: {
@@ -47,6 +47,19 @@ http.addUsers = ({ username, password, email, mobile }) => {
         email,
         mobile,
     })
+};
+
+// 根据id查询用户信息 users/id
+http.editUsers = (id) => {
+    return http.get('users/' + id);
+};
+
+// 编辑用户提交 users/id
+http.putEditUsers = (id, { email, mobile }) => {
+    return http.put('users/' + id, {
+        email,
+        mobile
+    });
 };
 
 // 添加请求拦截器

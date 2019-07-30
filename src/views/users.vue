@@ -16,7 +16,7 @@
         </el-input>
       </el-col>
       <el-col :span="12">
-        <el-button type="success" plain @click="dialogFormVisible = true">添加用户</el-button>
+        <el-button type="success" plain @click="addFormVisible = true">添加用户</el-button>
       </el-col>
     </el-col>
     <!-- 表格栏 -->
@@ -34,7 +34,13 @@
       </el-table-column>
       <el-table-column prop="option" label="操作">
         <template slot-scope="scope">
-          <el-button type="primary" icon="el-icon-edit" plain size="mini"></el-button>
+          <el-button
+            type="primary"
+            icon="el-icon-edit"
+            plain
+            size="mini"
+            @click="editUsers(scope.row.id)"
+          ></el-button>
           <el-button type="danger" icon="el-icon-delete" plain size="mini"></el-button>
           <el-button type="warning" icon="el-icon-check" plain size="mini"></el-button>
         </template>
@@ -50,8 +56,8 @@
       layout="total, sizes, prev, pager, next, jumper"
       :total="total"
     ></el-pagination>
-    <!-- 添加用户弹出框 -->
-    <el-dialog title="添加用户" :visible.sync="dialogFormVisible">
+    <!-- 添加用户对话框 -->
+    <el-dialog title="添加用户" :visible.sync="addFormVisible">
       <el-form
         :model="form"
         :rules="rules"
@@ -74,8 +80,32 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button @click="addFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="submitForm('form')">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 编辑用户对话框 -->
+    <el-dialog title="修改用户" :visible.sync="editFormVisible">
+      <el-form
+        :model="editForm"
+        :rules="rules"
+        label-width="70px"
+        class="demo-ruleForm"
+        label-position="right"
+      >
+        <el-form-item label="用户名" prop="username">
+          <el-input type="text" autocomplete="off" v-model="editForm.username" :disabled="true"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input type="email" autocomplete="off" v-model="editForm.email"></el-input>
+        </el-form-item>
+        <el-form-item label="电话" prop="mobile">
+          <el-input type="text" autocomplete="off" v-model="editForm.mobile"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="editFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="editSubmit()">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -95,15 +125,22 @@ export default {
         pagesize: 3 // 每页条数
       },
       // 数据总条数
-      total: "",
+      total: 10,
       // 表格数据
       tableData: [],
       // 对话框参数
-      dialogFormVisible: false, // 默认隐藏
-      // 表单数据
+      addFormVisible: false, // 添加用户对话框 默认隐藏
+      editFormVisible: false, // 编辑用户对话框 默认隐藏
+      // 添加用户表单数据
       form: {
         username: "",
         password: "",
+        email: "",
+        mobile: ""
+      },
+      // 编辑用户表单数据
+      editForm: {
+        username: "",
         email: "",
         mobile: ""
       },
@@ -148,6 +185,15 @@ export default {
       // 获取数据
       this.getUsersData();
     },
+    // 点击按钮 查询用户信息
+    editUsers(id) {
+      // 显示对话框
+      this.editFormVisible = true;
+      // 发请求
+      http.editUsers(id).then(backData => {
+        this.editForm = backData.data.data;
+      });
+    },
     // 表单验证
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
@@ -170,6 +216,25 @@ export default {
         } else {
           console.log("error submit!!");
           return false;
+        }
+      });
+    },
+    editSubmit() {
+      // this.$message.success('修改成功');
+      // 发送ajax 提交编辑后的用户信息
+      const id = this.editForm.id;
+      http.putEditUsers(id,this.editForm).then(backData => {
+        console.log(backData);
+        if (backData.data.meta.status == 200) {
+          // 提更新成功
+          this.$message.success(backData.data.meta.msg);
+          // 关闭对话框
+          this.editFormVisible = false;
+          // 更新页面数据
+          this.getUsersData();
+        } else {
+          // 提示 未添加成功信息
+          this.$message.error(backData.data.meta.msg);
         }
       });
     }
