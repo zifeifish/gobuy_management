@@ -9,8 +9,8 @@
 
 <script>
 export default {
-    // 父组件向子组件传值
-    props:['first','second'],
+  // 父组件向子组件传值
+  props: ["first", "second"]
 };
 </script>
 
@@ -20,5 +20,8 @@ export default {
   line-height: 45px;
   padding-left: 10px;
   background-color: #d3dce6;
+}
+/deep/.el-breadcrumb__inner {
+  color: rgb(38, 0, 255);
 }
 </style>

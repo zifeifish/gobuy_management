@@ -53,22 +53,22 @@ const router = new VueRouter({
     routes
 });
 
-// 4.注册全局导航守卫 判断登录
-router.beforeEach((to, from, next) => {
-    // 检查路由元信息
-    if (to.meta.isLogin) {
-        // 判断localStorage中是否有token
-        if (window.localStorage.getItem("token")) {
-            next();
-        } else {
-            Message.error("请先登录");
-            // 编程式导航到首页
-            router.push("/login");
-        }
-    } else {
-        next()
-    }
-});
+// // 4.注册全局导航守卫 判断登录
+// router.beforeEach((to, from, next) => {
+//     // 检查路由元信息
+//     if (to.meta.isLogin) {
+//         // 判断localStorage中是否有token
+//         if (window.localStorage.getItem("token")) {
+//             next();
+//         } else {
+//             Message.error("请先登录");
+//             // 编程式导航到首页
+//             router.push("/login");
+//         }
+//     } else {
+//         next()
+//     }
+// });
 
 // 5.导出 router
 export default router;
