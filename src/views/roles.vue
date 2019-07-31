@@ -2,43 +2,120 @@
   <div>
     <!-- 面包屑导航栏 -->
     <bread first="权限管理" second="角色列表"></bread>
-    <el-button>添加角色</el-button>
+    <el-button @click="addFormVisible=true">添加角色</el-button>
     <!-- 表格栏 -->
-    <el-table :data="tableData" border style="width: 100%">
-      <el-table-column prop="arrow" width="40"></el-table-column>
-      <el-table-column prop="id" label="#" width="40"></el-table-column>
-      <el-table-column prop="date" label="角色名称" width="380"></el-table-column>
-      <el-table-column prop="name" label="角色描述" width="380"></el-table-column>
-      <el-table-column prop="address" label="操作">
-        <el-button type="primary" icon="el-icon-edit" plain size="mini"></el-button>
-        <el-button type="danger" icon="el-icon-delete" plain size="mini"></el-button>
-        <el-button type="warning" icon="el-icon-check" plain size="mini"></el-button>
-      </el-table-column>
-    </el-table>
+    <template>
+      <el-table border :data="tableData" style="width: 100%">
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <el-form label-position="left" inline class="demo-table-expand">
+              <el-form-item label="角色名称">
+                <span>{{ props.row.name }}</span>
+              </el-form-item>
+              <el-form-item label="角色描述">
+                <span>{{ props.row.shop }}</span>
+              </el-form-item>
+            </el-form>
+          </template>
+        </el-table-column>
+        <el-table-column type="index"></el-table-column>
+        <el-table-column prop="roleName" label="角色名称" width="380"></el-table-column>
+        <el-table-column prop="roleDesc" label="角色描述" width="380"></el-table-column>
+        <el-table-column prop="address" label="操作">
+          <el-button type="primary" icon="el-icon-edit" plain size="mini"></el-button>
+          <el-button type="danger" icon="el-icon-delete" plain size="mini"></el-button>
+          <el-button type="warning" icon="el-icon-check" plain size="mini"></el-button>
+        </el-table-column>
+      </el-table>
+    </template>
+    <!-- 添加角色对话框 -->
+    <el-dialog title="添加角色" :visible.sync="addFormVisible">
+      <el-form
+        :model="form"
+        :rules="rules"
+        ref="form"
+        label-width="100px"
+        class="demo-ruleForm"
+        label-position="right"
+      >
+        <el-form-item label="角色名称" prop="roleName">
+          <el-input type="text" autocomplete="off" v-model="form.roleName"></el-input>
+        </el-form-item>
+        <el-form-item label="角色描述" prop="roleDesc">
+          <el-input type="text" autocomplete="off" v-model="form.roleDesc"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="addFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submitForm('form')">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import { http } from "../api/http.js";
 export default {
   data() {
     return {
-      tableData: [
-        {
-          arrow: ">",
-          id: 1,
-          date: "主管",
-          name: "技术负责人",
-          address: ""
-        },
-        {
-          arrow: ">",
-          id: 2,
-          date: "主管",
-          name: "技术负责人",
-          address: ""
-        }
-      ]
+      // 角色列表数据
+      tableData: [],
+      // 添加角色 表单数据
+      form: {
+        roleName: "",
+        roleDesc: ""
+      },
+      // 添加角色 表单验证
+      rules: {
+        roleName: [
+          { required: true, message: "请输入角色名称", trigger: "blur" }
+        ],
+        roleDesc: [
+          { required: true, message: "请输入角色描述", trigger: "blur" }
+        ]
+      },
+      addFormVisible: false // 添加角色对话框 默认隐藏
     };
+  },
+  methods: {
+    // 封装获取角色列表 方法
+    getRolesList() {
+      http.rolesList().then(backData => {
+        // console.log(backData);
+        this.tableData = backData.data.data;
+      });
+    },
+
+    // 表单提交
+    submitForm(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          // 表单验证成功 发送ajax 添加角色
+          http.post("roles", this.form).then(backData => {
+            console.log(backData);
+
+            if (backData.data.meta.status == 201) {
+              // 提示添加成功
+              this.$message.success(backData.data.meta.msg);
+              // 关闭对话框
+              this.addFormVisible = false;
+              // 更新页面数据
+              this.getRolesList();
+            } else {
+              // 提示 未添加成功信息
+              this.$message.error(backData.data.meta.msg);
+            }
+          });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    }
+  },
+  created() {
+    // 页面一进来 获取所有角色数据
+    this.getRolesList();
   }
 };
 </script>

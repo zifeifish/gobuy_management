@@ -78,8 +78,15 @@ http.idRole = (id) => {
 };
 
 // 分配用户角色 users/:id/role
-http.setRole = (id,rid) => {
-    return http.put(`users/${id}/role`,{
+http.setRole = (id, rid) => {
+    return http.put(`users/${id}/role`, {
+        rid
+    });
+};
+
+// 分配用户角色 users/:id/role
+http.setRole = (id, rid) => {
+    return http.put(`users/${id}/role`, {
         rid
     });
 };
