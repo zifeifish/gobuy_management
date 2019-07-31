@@ -325,7 +325,7 @@ export default {
     handleRoleChange() {
       // 发请求 分配角色
       http.setRole(this.rolesForm.id, this.rolesForm.rid).then(backData => {
-        console.log(backData);
+        // console.log(backData);
         if (backData.data.meta.status == 200) {
           // 提示分配成功
           this.$message.success(backData.data.meta.msg);
