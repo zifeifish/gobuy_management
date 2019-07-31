@@ -31,8 +31,6 @@ const routes = [
     {
         path: '/index',
         component: index,
-        // 设置路由元信息
-        meta: { isLogin: true },
         // 子路由
         children: [
             { path: '/users', component: users },

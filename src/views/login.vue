@@ -55,8 +55,6 @@ export default {
         if (valid) {
           // 发送ajax验证登录
           http.login(this.ruleForm).then(backData => {
-            console.log(backData);
-
             if (backData.data.meta.status == 200) {
               // 登录成功
               this.$message.success(backData.data.meta.msg);

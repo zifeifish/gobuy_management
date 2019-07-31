@@ -67,6 +67,23 @@ http.deleteUsers = (id) => {
     return http.delete('users/' + id);
 };
 
+// 角色列表 roles
+http.rolesList = () => {
+    return http.get('roles');
+};
+
+// 根据id 查询角色 roles/id
+http.idRole = (id) => {
+    return http.get('roles/' + id);
+};
+
+// 分配用户角色 users/:id/role
+http.setRole = (id,rid) => {
+    return http.put(`users/${id}/role`,{
+        rid
+    });
+};
+
 // 添加请求拦截器
 http.interceptors.request.use(function (config) {
     // 在发送请求之前做些什么

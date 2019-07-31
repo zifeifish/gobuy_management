@@ -48,7 +48,13 @@
             size="mini"
             @click="open(scope.row.id)"
           ></el-button>
-          <el-button type="warning" icon="el-icon-check" plain size="mini"></el-button>
+          <el-button
+            type="warning"
+            icon="el-icon-check"
+            plain
+            size="mini"
+            @click="getRoles(scope.row.id)"
+          ></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -114,6 +120,27 @@
         <el-button type="primary" @click="editSubmit()">确 定</el-button>
       </div>
     </el-dialog>
+    <!-- 分配角色对话框 -->
+    <el-dialog title="分配角色" :visible.sync="rolesFormVisible">
+      <el-form :model="rolesForm">
+        <div class="my_roles">&nbsp;&nbsp;&nbsp;当前用户 &nbsp;&nbsp;{{rolesForm.username}}</div>
+        <el-form-item label="请选择角色">
+          <el-select v-model="rolesForm.rid">
+            <!-- <el-option :value="-1" label="请选择角色" disabled></el-option> -->
+            <el-option
+              v-for="item in rolesList"
+              :key="item.id"
+              :value="item.roleName"
+              :lable="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="rolesFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleRoleChange">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -137,6 +164,7 @@ export default {
       // 对话框参数
       addFormVisible: false, // 添加用户对话框 默认隐藏
       editFormVisible: false, // 编辑用户对话框 默认隐藏
+      rolesFormVisible: false, // 角色分配对话框 默认隐藏
       // 添加用户表单数据
       form: {
         username: "",
@@ -160,14 +188,21 @@ export default {
           { required: true, message: "请输入密码", trigger: "blur" },
           { min: 6, max: 12, message: "长度在 6 到 12 个字符", trigger: "blur" }
         ]
-      }
+      },
+      // 当前用户信息
+      rolesForm: {
+        username: "",
+        roleName: "",
+        rid: ""
+      },
+      //角色列表下拉框
+      rolesList: []
     };
   },
   methods: {
     // 封装获取用户数据列表 方法
     getUsersData() {
       http.users(this.usersData).then(backData => {
-        console.log(backData);
         // 表格数据
         this.tableData = backData.data.data.users;
         // 总数据量
@@ -210,7 +245,7 @@ export default {
               // 提示添加成功
               this.$message.success(backData.data.meta.msg);
               // 关闭对话框
-              this.dialogFormVisible = false;
+              this.addFormVisible = false;
               // 更新页面数据
               this.getUsersData();
             } else {
@@ -267,6 +302,33 @@ export default {
             message: "已取消删除"
           });
         });
+    },
+    // 分配角色
+    getRoles(id) {
+      // 获取用户信息
+      http.editUsers(id).then(backData => {
+        console.log("------------------");
+        console.log(backData);
+
+        this.rolesForm = backData.data.data;
+      });
+      // 显示对话框
+      this.rolesFormVisible = true;
+      // 发送请求 获取角色列表
+      http.rolesList().then(backData => {
+        console.log(backData);
+        // 角色列表
+        this.rolesList = backData.data.data;
+      });
+    },
+    // 下拉框选中
+    handleRoleChange() {
+      // 隐藏下拉框
+      this.rolesFormVisible = false;
+      // 发请求 分配角色
+      http.setRole(this.rolesForm.id,this.rolesForm.rid).then(backData => {
+        console.log(backData);
+      });
     }
   },
   created() {
@@ -282,5 +344,8 @@ export default {
   line-height: 40px;
   padding-left: 10px;
   background-color: #d3dce6;
+}
+.my_roles {
+  margin-bottom: 30px;
 }
 </style>
