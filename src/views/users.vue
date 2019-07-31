@@ -307,8 +307,8 @@ export default {
     getRoles(id) {
       // 获取用户信息
       http.editUsers(id).then(backData => {
-        console.log("------------------");
-        console.log(backData);
+        // console.log("------------------");
+        // console.log(backData);
 
         this.rolesForm = backData.data.data;
       });
@@ -316,18 +316,25 @@ export default {
       this.rolesFormVisible = true;
       // 发送请求 获取角色列表
       http.rolesList().then(backData => {
-        console.log(backData);
+        // console.log(backData);
         // 角色列表
         this.rolesList = backData.data.data;
       });
     },
     // 下拉框选中
     handleRoleChange() {
-      // 隐藏下拉框
-      this.rolesFormVisible = false;
       // 发请求 分配角色
-      http.setRole(this.rolesForm.id,this.rolesForm.rid).then(backData => {
+      http.setRole(this.rolesForm.id, this.rolesForm.rid).then(backData => {
         console.log(backData);
+        if (backData.data.meta.status == 200) {
+          // 提示分配成功
+          this.$message.success(backData.data.meta.msg);
+          // 隐藏对话框
+          this.rolesFormVisible = false;
+        } else {
+          // 提示分配失败信息
+          this.$message.error(backData.data.meta.msg);
+        }
       });
     }
   },
