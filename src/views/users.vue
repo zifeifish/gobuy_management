@@ -29,7 +29,12 @@
         <template slot-scope="scope">
           <!-- 开关 -->
           <!-- scope.row 保存的是当前自定义列里的数据 -->
-          <el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+          <el-switch
+            v-model="scope.row.mg_state"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            @change="changeStatu(scope.row.id,scope.row.mg_state)"
+          ></el-switch>
         </template>
       </el-table-column>
       <el-table-column prop="option" label="操作">
@@ -155,7 +160,7 @@ export default {
       usersData: {
         query: "", // 查询参数
         pagenum: 1, // 当前页
-        pagesize: 3 // 每页条数
+        pagesize: 5 // 每页条数
       },
       // 数据总条数
       total: 10,
@@ -233,6 +238,21 @@ export default {
       // 发请求
       http.editUsers(id).then(backData => {
         this.editForm = backData.data.data;
+      });
+    },
+    // 用户状态改变
+    changeStatu(id, type) {
+      http.put(`users/${id}/state/${type}`).then(backData => {
+        // console.log(backData);
+        if (backData.data.meta.status == 200) {
+          // 提示状态更新成功
+          this.$message.success(backData.data.meta.msg);
+          // 更新页面数据
+          this.getUsersData()
+        } else {
+          // 提示 未添加成功信息
+          this.$message.error(backData.data.meta.msg);
+        }
       });
     },
     // 添加用户 表单验证
