@@ -39,13 +39,15 @@
       </el-table-column>
       <el-table-column prop="option" label="操作">
         <template slot-scope="scope">
+          <!-- 编辑 -->
           <el-button
             type="primary"
             icon="el-icon-edit"
             plain
             size="mini"
-            @click="editUsers(scope.row.id)"
+            @click="editUsers(scope.row)"
           ></el-button>
+          <!-- 删除 -->
           <el-button
             type="danger"
             icon="el-icon-delete"
@@ -53,6 +55,7 @@
             size="mini"
             @click="open(scope.row.id)"
           ></el-button>
+          <!-- 分配角色 -->
           <el-button
             type="warning"
             icon="el-icon-check"
@@ -183,6 +186,8 @@ export default {
         email: "",
         mobile: ""
       },
+      // 定义变量保存 当前编辑行的数据
+      rowData: {},
       // 表单验证规则
       rules: {
         username: [
@@ -231,14 +236,17 @@ export default {
       // 获取数据
       this.getUsersData();
     },
-    // 点击按钮 查询用户信息
-    editUsers(id) {
+    // 点击编辑按钮 查询用户信息
+    editUsers(data) {
       // 显示对话框
       this.editFormVisible = true;
-      // 发请求
-      http.editUsers(id).then(backData => {
-        this.editForm = backData.data.data;
-      });
+      // 显示数据
+      this.editForm.username = data.username;
+      this.editForm.email = data.email;
+      this.editForm.mobile = data.mobile;
+      this.editForm.id = data.id;
+      // 保存当前行数据
+      this.rowData = data;
     },
     // 用户状态改变
     changeStatu(id, type) {
@@ -248,7 +256,7 @@ export default {
           // 提示状态更新成功
           this.$message.success(backData.data.meta.msg);
           // 更新页面数据
-          this.getUsersData()
+          this.getUsersData();
         } else {
           // 提示 未添加成功信息
           this.$message.error(backData.data.meta.msg);
@@ -291,7 +299,11 @@ export default {
           // 关闭对话框
           this.editFormVisible = false;
           // 更新页面数据
-          this.getUsersData();
+          // this.getUsersData();  
+          // 赋值(深拷贝) 不用再次请求数据
+          this.rowData.username = this.editForm.username;
+          this.rowData.email = this.editForm.email;
+          this.rowData.mobile = this.editForm.mobile;
         } else {
           // 提示 未添加成功信息
           this.$message.error(backData.data.meta.msg);
