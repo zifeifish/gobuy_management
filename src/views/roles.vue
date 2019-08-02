@@ -7,21 +7,42 @@
     <template>
       <el-table border :data="tableData" style="width: 100%">
         <el-table-column type="expand">
-          <template slot-scope="props">
-            <el-form label-position="left" inline class="demo-table-expand">
-              <el-form-item label="角色名称">
-                <span>{{ props.row.name }}</span>
-              </el-form-item>
-              <el-form-item label="角色描述">
-                <span>{{ props.row.shop }}</span>
-              </el-form-item>
-            </el-form>
+          <template slot-scope="scope">
+            <el-row v-for="item in scope.row.children" :key="item.id">
+              <!-- 一级菜单 -->
+              <el-col :span="6">
+                <el-tag closable>{{item.authName}}</el-tag><span class="el-icon-arrow-right"></span>
+              </el-col>
+
+              <el-col :span="18">
+                <!-- 二级菜单 -->
+                <el-row v-for="level2 in item.children" :key="level2.id">
+                  <el-col :span="6">
+                    <el-tag
+                      closable
+                      type="success" 
+                    >{{ level2.authName }}</el-tag><span class="el-icon-arrow-right"></span>
+                  </el-col>
+
+                  <!-- 三级菜单 -->
+                  <el-col :span="18">
+                    <el-tag
+                      class="my_tag"
+                      closable
+                      type="warning"
+                      v-for="level3 in level2.children"
+                      :key="level3.id"
+                    >{{ level3.authName }}</el-tag>
+                  </el-col>
+                </el-row>
+              </el-col>
+            </el-row>
           </template>
         </el-table-column>
         <el-table-column type="index"></el-table-column>
         <el-table-column prop="roleName" label="角色名称" width="380"></el-table-column>
         <el-table-column prop="roleDesc" label="角色描述" width="380"></el-table-column>
-        <el-table-column prop="address" label="操作">
+        <el-table-column label="操作">
           <template slot-scope="scope">
             <!-- 编辑 -->
             <el-button
@@ -178,7 +199,7 @@ export default {
         console.log(backData);
         if (backData.data.meta.status == 200) {
           // 提示更新成功
-          this.$message.success('编辑成功');
+          this.$message.success("编辑成功");
           // 关闭对话框
           this.editFormVisible = false;
           // 更新页面数据
@@ -197,5 +218,9 @@ export default {
 };
 </script>
 
-<style>
+<style lang="less" scoped>
+.my_tag{
+margin-top: 10px;
+margin-right: 20px;
+}
 </style>
