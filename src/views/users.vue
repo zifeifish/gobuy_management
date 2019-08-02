@@ -61,7 +61,7 @@
             icon="el-icon-check"
             plain
             size="mini"
-            @click="getRoles(scope.row.id)"
+            @click="getRoles(scope.row)"
           ></el-button>
         </template>
       </el-table-column>
@@ -133,13 +133,13 @@
       <el-form :model="rolesForm">
         <div class="my_roles">&nbsp;&nbsp;&nbsp;当前用户 &nbsp;&nbsp;{{rolesForm.username}}</div>
         <el-form-item label="请选择角色">
-          <el-select v-model="rolesForm.rid">
-            <!-- <el-option :value="-1" label="请选择角色" disabled></el-option> -->
+          <el-select v-model="rolesForm.role_name" placeholder="请选择对应的角色" ref="resel">
+            <el-option :value="-1" label="请选择角色" disabled></el-option>
             <el-option
               v-for="item in rolesList"
               :key="item.id"
-              :value="item.roleName"
-              :lable="item.id"
+              :label="item.roleName"
+              :value="item.id"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -202,7 +202,7 @@ export default {
       // 当前用户信息
       rolesForm: {
         username: "",
-        roleName: "",
+        role_name: "",
         rid: ""
       },
       //角色列表下拉框
@@ -299,7 +299,7 @@ export default {
           // 关闭对话框
           this.editFormVisible = false;
           // 更新页面数据
-          // this.getUsersData();  
+          // this.getUsersData();
           // 赋值(深拷贝) 不用再次请求数据
           this.rowData.username = this.editForm.username;
           this.rowData.email = this.editForm.email;
@@ -336,14 +336,9 @@ export default {
         });
     },
     // 分配角色
-    getRoles(id) {
+    getRoles(data) {
       // 获取用户信息
-      http.editUsers(id).then(backData => {
-        // console.log("------------------");
-        // console.log(backData);
-
-        this.rolesForm = backData.data.data;
-      });
+      this.rolesForm = data;
       // 显示对话框
       this.rolesFormVisible = true;
       // 发送请求 获取角色列表
@@ -353,10 +348,12 @@ export default {
         this.rolesList = backData.data.data;
       });
     },
-    // 下拉框选中
+    // 提交分配角色数据
     handleRoleChange() {
+      // 获取
+      let rid = this.$refs.resel.value;
       // 发请求 分配角色
-      http.setRole(this.rolesForm.id, this.rolesForm.rid).then(backData => {
+      http.setRole(this.rolesForm.id, rid).then(backData => {
         // console.log(backData);
         if (backData.data.meta.status == 200) {
           // 提示分配成功
@@ -373,6 +370,12 @@ export default {
   created() {
     // 页面一进来 发送axjx 获取用户数据列表
     this.getUsersData();
+    // 发送请求 获取角色列表
+    http.rolesList().then(backData => {
+      // console.log(backData);
+      // 角色列表
+      this.rolesList = backData.data.data;
+    });
   }
 };
 </script>
