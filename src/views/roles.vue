@@ -11,7 +11,7 @@
             <el-row v-for="item in scope.row.children" :key="item.id">
               <!-- 一级菜单 -->
               <el-col :span="6">
-                <el-tag closable  @close="delRoleRight(scope.row,item)">{{item.authName}}</el-tag>
+                <el-tag closable @close="delRoleRight(scope.row,item)">{{item.authName}}</el-tag>
                 <span class="el-icon-arrow-right"></span>
               </el-col>
 
@@ -19,7 +19,11 @@
                 <!-- 二级菜单 -->
                 <el-row v-for="level2 in item.children" :key="level2.id">
                   <el-col :span="6">
-                    <el-tag closable type="success"  @close="delRoleRight(scope.row,level2)">{{ level2.authName }}</el-tag>
+                    <el-tag
+                      closable
+                      type="success"
+                      @close="delRoleRight(scope.row,level2)"
+                    >{{ level2.authName }}</el-tag>
                     <span class="el-icon-arrow-right"></span>
                   </el-col>
 
@@ -54,8 +58,14 @@
             ></el-button>
             <!-- 删除 -->
             <el-button type="danger" icon="el-icon-delete" plain size="mini"></el-button>
-            <!-- 修改 -->
-            <el-button type="warning" icon="el-icon-check" plain size="mini"></el-button>
+            <!-- 权限分配 -->
+            <el-button
+              type="warning"
+              icon="el-icon-check"
+              plain
+              size="mini"
+              @click="getRolesRight(scope.row)"
+            ></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -103,6 +113,21 @@
         <el-button type="primary" @click="editSubmitForm(editForm.roleId)">确 定</el-button>
       </div>
     </el-dialog>
+    <!-- 权限分配对话框 -->
+    <el-dialog title="权限分配" :visible.sync="setRoleRights">
+      <el-tree
+        :data="data"
+        show-checkbox
+        default-expand-all
+        node-key="id"
+        :default-checked-keys="checkKeyList"
+        :props="defaultProps"
+      ></el-tree>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="setRoleRights = false">取 消</el-button>
+        <el-button type="primary" @click="setRoleRights = false">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -143,7 +168,18 @@ export default {
           { required: true, message: "请输入角色描述", trigger: "blur" }
         ]
       },
-      editFormVisible: false // 编辑角色对话框 默认隐藏
+      editFormVisible: false, // 编辑角色对话框 默认隐藏
+      setRoleRights: false, // 权限分配对话框 默认隐藏
+      // 数形控件 绑定的数据
+      data: [],
+      // 默认勾选的节点的 key 的数组
+      checkKeyList: [],
+      defaultProps: {
+        // 指定子节点 为对象的哪个属性值
+        children: "children",
+        // 指定要显示的文字 用哪个属性的值
+        label: "authName"
+      }
     };
   },
   methods: {
@@ -214,16 +250,17 @@ export default {
 
     // 标签页 删除角色指定权限
     delRoleRight(role, right) {
+      // 提示是否真的删除
       this.$confirm("即将删除此项权限, 是否继续?", "温馨提示")
         .then(() => {
           // 根据角色id和权限id 发送请求
           http.delRoleRight(role.id, right.id).then(backData => {
-            console.log(backData);
+            // console.log(backData);
             // 删除成功
             if (backData.data.meta.status == 200) {
               // 弹框提示
               this.$message.success(backData.data.meta.msg);
-              // 更新页面数据 
+              // 更新页面数据
               role.children = backData.data.data;
             }
           });
@@ -231,11 +268,48 @@ export default {
         .catch(() => {
           this.$message.info("已终止删除~");
         });
+    },
+
+    // 获取所有权限数据列表
+    getRolesRight(row) {
+      // 显示权限分配对话框
+      this.setRoleRights = true;
+
+      // 保存原来的树形数据
+      let tmp = this.data.concat();
+
+      // 清空树形数据
+      this.data = [];
+
+      // 还原数据，根据数据重新生成
+      this.data = tmp;
+
+      // 递归 遍历当前行数据 将权限id 添加到默认勾选节点 key的数组中
+      let list = [];
+      function getRolesRight(row) {
+        if (row.children) {
+          // row.children 里有该角色拥有的权限
+          for (let i = 0; i < row.children.length; i++) {
+            // list.push(row.children[i].id);
+            getRolesRight(row.children[i]);
+          }
+        } else {
+          // 最后一级 加进去就可以了
+          list.push(row.id);
+        }
+      }
+      getRolesRight(row);
+      this.checkKeyList = list;
     }
   },
   created() {
     // 页面一进来 获取所有角色数据
     this.getRolesList();
+    // 发请求 获取所有权限数据
+    http.get("rights/tree").then(backData => {
+      console.log(backData);
+      this.data = backData.data.data;
+    });
   }
 };
 </script>
