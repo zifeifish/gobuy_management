@@ -91,6 +91,12 @@ http.setRole = (id, rid) => {
     });
 };
 
+// 删除角色指定权限 请求路径：roles/:roleId/rights/:rightId
+http.delRoleRight = (roleId,rightId) => {
+    return http.delete(`roles/${roleId}/rights/${rightId}`);
+};
+
+
 // 添加请求拦截器
 http.interceptors.request.use(function (config) {
     // 在发送请求之前做些什么

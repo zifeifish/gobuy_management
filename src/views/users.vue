@@ -157,6 +157,7 @@
 import { http } from "../api/http";
 
 export default {
+  name:'users',
   data() {
     return {
       // 用户列表查询参数

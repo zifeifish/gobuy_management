@@ -11,17 +11,16 @@
             <el-row v-for="item in scope.row.children" :key="item.id">
               <!-- 一级菜单 -->
               <el-col :span="6">
-                <el-tag closable>{{item.authName}}</el-tag><span class="el-icon-arrow-right"></span>
+                <el-tag closable  @close="delRoleRight(scope.row,item)">{{item.authName}}</el-tag>
+                <span class="el-icon-arrow-right"></span>
               </el-col>
 
               <el-col :span="18">
                 <!-- 二级菜单 -->
                 <el-row v-for="level2 in item.children" :key="level2.id">
                   <el-col :span="6">
-                    <el-tag
-                      closable
-                      type="success" 
-                    >{{ level2.authName }}</el-tag><span class="el-icon-arrow-right"></span>
+                    <el-tag closable type="success"  @close="delRoleRight(scope.row,level2)">{{ level2.authName }}</el-tag>
+                    <span class="el-icon-arrow-right"></span>
                   </el-col>
 
                   <!-- 三级菜单 -->
@@ -32,6 +31,7 @@
                       type="warning"
                       v-for="level3 in level2.children"
                       :key="level3.id"
+                      @close="delRoleRight(scope.row,level3)"
                     >{{ level3.authName }}</el-tag>
                   </el-col>
                 </el-row>
@@ -83,7 +83,7 @@
       </div>
     </el-dialog>
     <!-- 编辑角色对话框 -->
-    <el-dialog title="添加角色" :visible.sync="editFormVisible">
+    <el-dialog title="编辑角色" :visible.sync="editFormVisible">
       <el-form
         :model="editForm"
         :rules="editrules"
@@ -109,6 +109,7 @@
 <script>
 import { http } from "../api/http.js";
 export default {
+  name: "roles",
   data() {
     return {
       // 角色列表数据
@@ -209,6 +210,27 @@ export default {
           this.$message.error(backData.data.meta.msg);
         }
       });
+    },
+
+    // 标签页 删除角色指定权限
+    delRoleRight(role, right) {
+      this.$confirm("即将删除此项权限, 是否继续?", "温馨提示")
+        .then(() => {
+          // 根据角色id和权限id 发送请求
+          http.delRoleRight(role.id, right.id).then(backData => {
+            console.log(backData);
+            // 删除成功
+            if (backData.data.meta.status == 200) {
+              // 弹框提示
+              this.$message.success(backData.data.meta.msg);
+              // 更新页面数据 
+              role.children = backData.data.data;
+            }
+          });
+        })
+        .catch(() => {
+          this.$message.info("已终止删除~");
+        });
     }
   },
   created() {
@@ -219,8 +241,8 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.my_tag{
-margin-top: 10px;
-margin-right: 20px;
+.my_tag {
+  margin-top: 10px;
+  margin-right: 20px;
 }
 </style>
