@@ -32,7 +32,10 @@
             <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
           </el-upload>
         </el-tab-pane>
-        <el-tab-pane label="商品内容" name="4">商品内容</el-tab-pane>
+        <el-tab-pane label="商品内容" name="4">
+          <el-button type="primary">添加商品</el-button>
+          <quillEditor></quillEditor>
+        </el-tab-pane>
       </el-tabs>
     </template>
   </div>
@@ -40,7 +43,16 @@
 
 
 <script>
+// require styles
+import "quill/dist/quill.core.css";
+import "quill/dist/quill.snow.css";
+import "quill/dist/quill.bubble.css";
+// 注册为组件
+import { quillEditor } from "vue-quill-editor";
 export default {
+  components: {
+    quillEditor
+  },
   data() {
     return {
       active: 0,
