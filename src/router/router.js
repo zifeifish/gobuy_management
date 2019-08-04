@@ -16,8 +16,8 @@ import roles from '../views/roles.vue'; // 权限管理-roles组件
 import rights from '../views/rights.vue'; // 权限管理-rights组件
 import goods from '../views/goods/goods.vue'; // 商品列表-goods组件
 
-import gdIndex from '../views/goods/index.vue'; // 商品列表-index子组件
-import addGoods from '../views/goods/addGoods.vue'; // 商品列表-index子组件
+import gdIndex from '../views/goods/components/index.vue'; // 商品列表-index子组件
+import addGoods from '../views/goods/components/addGoods.vue'; // 商品列表-index子组件
 
 import params from '../views/params.vue'; // 商品管理-params组件
 import categories from '../views/categories.vue'; // 商品管理-categories组件
