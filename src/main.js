@@ -1,6 +1,13 @@
 import Vue from 'vue';
 import App from './App.vue';
 
+import moment from 'moment'
+
+// 注册全局的过滤器
+Vue.filter('dateformat', function (dataStr, pattern = 'YYYY-MM-DD HH:mm:ss') {
+  return moment(dataStr).format(pattern)
+});
+
 Vue.config.productionTip = false;
 
 // 导入 ElementUI 模块

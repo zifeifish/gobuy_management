@@ -15,22 +15,62 @@
         v-model="value"
         :options="options"
         :props="{ expandTrigger: 'hover' }"
+        placeholder="请选择商品分类"
       ></el-cascader>
     </div>
     <!-- 标签页 -->
     <el-tabs v-model="activeName" class="my_tag">
-      <!-- 禁用按钮 -->
-      <el-button type="primary" disabled class="not_btn">添加动态参数</el-button>
       <el-tab-pane label="动态数据" name="first">
+        <el-button type="primary" disabled class="not_btn">添加动态参数</el-button>
         <!-- 动态数据表格栏 -->
         <el-table :data="tableData" border style="width: 100%">
-          <el-table-column prop="arrow" width="40"></el-table-column>
-          <el-table-column prop="id" label="#" width="40"></el-table-column>
+          <!-- 展开行 -->
+          <el-table-column type="expand">
+            <template slot-scope="scope">
+              <!-- 标签 -->
+              <el-tag
+                :key="tag"
+                v-for="tag in dynamicTags"
+                closable
+                :disable-transitions="false"
+                @close="handleClose(tag)"
+              >{{tag}}</el-tag>
+              <el-input
+                class="input-new-tag"
+                v-if="inputVisible"
+                v-model="inputValue"
+                ref="saveTagInput"
+                size="small"
+                @keyup.enter.native="handleInputConfirm"
+                @blur="handleInputConfirm"
+              ></el-input>
+              <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
+            </template>
+          </el-table-column>
+          <el-table-column type="index" width="50"></el-table-column>
           <el-table-column prop="date" label="商品参数" width="180"></el-table-column>
-          <el-table-column prop="address" label="操作"></el-table-column>
+          <el-table-column prop="option" label="操作">
+            <template slot-scope="scope">
+              <!-- 编辑 -->
+              <el-button
+                type="primary"
+                icon="el-icon-edit"
+                plain
+                size="mini"
+              ></el-button>
+              <!-- 删除 -->
+              <el-button
+                type="danger"
+                icon="el-icon-delete"
+                plain
+                size="mini"
+              ></el-button>
+            </template>
+          </el-table-column>
         </el-table>
       </el-tab-pane>
       <el-tab-pane label="静态数据" name="second">
+        <el-button type="primary" disabled class="not_btn">添加静态参数</el-button>
         <!-- 静态数据表格栏 -->
         <el-table :data="tableData" border style="width: 100%">
           <el-table-column prop="id" label="#" width="40"></el-table-column>
@@ -47,7 +87,17 @@
 export default {
   data() {
     return {
-      tableData: [],
+      // 动态数据
+      tableData: [
+        {
+          date: "版式",
+        }
+      ],
+      // 标签数据
+      dynamicTags: ["aa", "bb", "cc"],
+      inputVisible: false,
+      inputValue: "",
+      // 标签页
       activeName: "first",
       value: [],
       options: [
@@ -323,6 +373,25 @@ export default {
   methods: {
     handleChange(value) {
       console.log(value);
+    },
+    handleClose(tag) {
+      this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
+    },
+
+    showInput() {
+      this.inputVisible = true;
+      this.$nextTick(_ => {
+        this.$refs.saveTagInput.$refs.input.focus();
+      });
+    },
+
+    handleInputConfirm() {
+      let inputValue = this.inputValue;
+      if (inputValue) {
+        this.dynamicTags.push(inputValue);
+      }
+      this.inputVisible = false;
+      this.inputValue = "";
     }
   }
 };
@@ -345,5 +414,20 @@ export default {
   text-align: center;
   padding: 0;
   margin-bottom: 20px;
+}
+.el-tag + .el-tag {
+  margin-left: 10px;
+}
+.button-new-tag {
+  margin-left: 10px;
+  height: 32px;
+  line-height: 30px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.input-new-tag {
+  width: 90px;
+  margin-left: 10px;
+  vertical-align: bottom;
 }
 </style>
