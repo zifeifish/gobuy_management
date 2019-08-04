@@ -227,7 +227,7 @@ export default {
       this.editFormVisible = true;
       // 获取角色信息
       http.get(`roles/${id}`).then(backData => {
-        console.log(backData);
+        // console.log(backData);
         // 获取编辑角色信息
         this.editForm = backData.data.data;
       });
@@ -236,7 +236,7 @@ export default {
     // 编辑角色 表单提交
     editSubmitForm(id) {
       http.put(`roles/${id}`, this.editForm).then(backData => {
-        console.log(backData);
+        // console.log(backData);
         if (backData.data.meta.status == 200) {
           // 提示更新成功
           this.$message.success("编辑成功");
@@ -317,7 +317,7 @@ export default {
       let rids = keys.concat(halfKeys).toString();
       // 发请求 分配权限
       http.setRoleRight({ roleId: this.roleId, rids: rids }).then(backData => {
-        console.log(backData);
+        // console.log(backData);
         // 更新成功
         if (backData.data.meta.status == 200) {
           // 隐藏对话框
@@ -338,7 +338,7 @@ export default {
     this.getRolesList();
     // 发请求 获取所有权限数据
     http.get("rights/tree").then(backData => {
-      console.log(backData);
+      // console.log(backData);
       this.data = backData.data.data;
     });
   }

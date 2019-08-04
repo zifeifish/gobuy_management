@@ -20,7 +20,7 @@
               <i class="el-icon-location"></i>
               <span>{{item.authName}}</span>
             </template>
-            <el-menu-item v-for="(it,num) in item.children" :key="num" :index="it.path">
+            <el-menu-item v-for="(it,num) in item.children" :key="num" :index="'/'+it.path">
               <i class="el-icon-menu"></i>
               <span>{{it.authName}}</span>
             </el-menu-item>

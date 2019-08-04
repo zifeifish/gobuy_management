@@ -1,7 +1,5 @@
 <template>
   <div>
-    <!-- 面包屑导航栏 -->
-    <bread first="商品管理" second="商品列表"></bread>
     <!-- 搜索框 -->
     <el-col>
       <!-- layout布局 -->
@@ -11,7 +9,7 @@
         </el-input>
       </el-col>
       <el-col :span="12">
-        <el-button type="success" plain>添加商品</el-button>
+        <el-button type="success" plain @click="$router.push('/goods/addGoods')">添加商品</el-button>
       </el-col>
     </el-col>
     <!-- 表格栏 -->
