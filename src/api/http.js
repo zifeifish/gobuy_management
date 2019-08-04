@@ -92,8 +92,15 @@ http.setRole = (id, rid) => {
 };
 
 // 删除角色指定权限 请求路径：roles/:roleId/rights/:rightId
-http.delRoleRight = (roleId,rightId) => {
+http.delRoleRight = (roleId, rightId) => {
     return http.delete(`roles/${roleId}/rights/${rightId}`);
+};
+
+// 角色授权 请求路径：roles/:roleId/rights
+http.setRoleRight = ({roleId, rids}) => {
+    return http.post(`roles/${roleId}/rights`, {
+        rids:rids
+    });
 };
 
 

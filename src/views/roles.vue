@@ -122,10 +122,11 @@
         node-key="id"
         :default-checked-keys="checkKeyList"
         :props="defaultProps"
+        ref="tree"
       ></el-tree>
       <div slot="footer" class="dialog-footer">
         <el-button @click="setRoleRights = false">取 消</el-button>
-        <el-button type="primary" @click="setRoleRights = false">确 定</el-button>
+        <el-button type="primary" @click="setRole()">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -137,6 +138,8 @@ export default {
   name: "roles",
   data() {
     return {
+      // 角色id
+      roleId: 0,
       // 角色列表数据
       tableData: [],
       // 添加角色 表单数据
@@ -272,6 +275,7 @@ export default {
 
     // 获取所有权限数据列表
     getRolesRight(row) {
+      this.roleId = row.id;
       // 显示权限分配对话框
       this.setRoleRights = true;
 
@@ -300,6 +304,33 @@ export default {
       }
       getRolesRight(row);
       this.checkKeyList = list;
+    },
+
+    // 设置角色权限
+    setRole() {
+      
+      // 获取到所有选中的权限id
+      let keys = this.$refs.tree.getCheckedKeys();
+      // 拿到所有半选择的权限id
+      let halfKeys = this.$refs.tree.getHalfCheckedKeys();
+      // 用逗号分隔数组每一项 以 `,` 分割的权限 ID 列表
+      let rids = keys.concat(halfKeys).toString();
+      // 发请求 分配权限
+      http.setRoleRight({ roleId: this.roleId, rids: rids }).then(backData => {
+        console.log(backData);
+        // 更新成功
+        if (backData.data.meta.status == 200) {
+          // 隐藏对话框
+          this.setRoleRights = false;
+          // 提示消息
+          this.$message.success("分配权限成功");
+          // 更新页面数据
+          this.getRolesList();
+        }else{
+          // 更新失败提示信息
+          this.$message.error(backData.data.meta.msg);
+        }
+      });
     }
   },
   created() {
