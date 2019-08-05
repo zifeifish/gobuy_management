@@ -52,19 +52,9 @@
           <el-table-column prop="option" label="操作">
             <template slot-scope="scope">
               <!-- 编辑 -->
-              <el-button
-                type="primary"
-                icon="el-icon-edit"
-                plain
-                size="mini"
-              ></el-button>
+              <el-button type="primary" icon="el-icon-edit" plain size="mini"></el-button>
               <!-- 删除 -->
-              <el-button
-                type="danger"
-                icon="el-icon-delete"
-                plain
-                size="mini"
-              ></el-button>
+              <el-button type="danger" icon="el-icon-delete" plain size="mini"></el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -84,13 +74,14 @@
 </template>
 
 <script>
+import {http} from '../api/http';
 export default {
   data() {
     return {
       // 动态数据
       tableData: [
         {
-          date: "版式",
+          date: "版式"
         }
       ],
       // 标签数据
@@ -100,6 +91,7 @@ export default {
       // 标签页
       activeName: "first",
       value: [],
+      // 级联选择器数据
       options: [
         {
           value: "zhinan",
@@ -372,19 +364,17 @@ export default {
   },
   methods: {
     handleChange(value) {
-      console.log(value);
+      // console.log(value);
     },
     handleClose(tag) {
       this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
     },
-
     showInput() {
       this.inputVisible = true;
       this.$nextTick(_ => {
         this.$refs.saveTagInput.$refs.input.focus();
       });
     },
-
     handleInputConfirm() {
       let inputValue = this.inputValue;
       if (inputValue) {
@@ -393,6 +383,19 @@ export default {
       this.inputVisible = false;
       this.inputValue = "";
     }
+  },
+  created() {
+    // 获取 商品数据列表
+    http
+      .get("categories", {
+        params: {
+          type: 3
+        }
+      })
+      .then(bcakData => {
+        console.log(bcakData);
+        // this.tableData = bcakData.data.data;
+      });
   }
 };
 </script>
