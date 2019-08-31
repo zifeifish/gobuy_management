@@ -12,28 +12,31 @@
     <div class="my_sel">
       <span>请选择商品分类:</span>&nbsp;
       <el-cascader
-        v-model="value"
+        v-model="selectedOptions"
         :options="options"
-        :props="{ expandTrigger: 'hover' }"
+        expandTrigger="hover"
+        :props="{label: 'cat_name', value: 'cat_id' }"
         placeholder="请选择商品分类"
+        :show-all-levels="false"
+        @change="handleChange"
       ></el-cascader>
     </div>
-    <!-- 标签页 -->
-    <el-tabs v-model="activeName" class="my_tag">
+    <!-- 标签tab栏 -->
+    <el-tabs v-model="activeName" class="my_tag" @tab-click="tagChange">
       <el-tab-pane label="动态数据" name="first">
-        <el-button type="primary" disabled class="not_btn">添加动态参数</el-button>
+        <el-button type="primary" :disabled="dynaData.length>0?false:true" class="not_btn">添加动态参数</el-button>
         <!-- 动态数据表格栏 -->
-        <el-table :data="tableData" border style="width: 100%">
+        <el-table :data="dynaData" stripe border style="width: 100%">
           <!-- 展开行 -->
           <el-table-column type="expand">
             <template slot-scope="scope">
               <!-- 标签 -->
               <el-tag
-                :key="tag"
-                v-for="tag in dynamicTags"
+                :key="index"
+                v-for="(tag,index) in (scope.row.attr_vals.split(','))"
                 closable
                 :disable-transitions="false"
-                @close="handleClose(tag)"
+                @close="handleClose(scope.row,index)"
               >{{tag}}</el-tag>
               <el-input
                 class="input-new-tag"
@@ -48,7 +51,7 @@
             </template>
           </el-table-column>
           <el-table-column type="index" width="50"></el-table-column>
-          <el-table-column prop="date" label="商品参数" width="180"></el-table-column>
+          <el-table-column prop="attr_name" label="商品参数" width="180"></el-table-column>
           <el-table-column prop="option" label="操作">
             <template slot-scope="scope">
               <!-- 编辑 -->
@@ -60,13 +63,20 @@
         </el-table>
       </el-tab-pane>
       <el-tab-pane label="静态数据" name="second">
-        <el-button type="primary" disabled class="not_btn">添加静态参数</el-button>
+        <el-button type="primary" :disabled="staticData.length>0?false:true" class="not_btn">添加静态参数</el-button>
         <!-- 静态数据表格栏 -->
-        <el-table :data="tableData" border style="width: 100%">
-          <el-table-column prop="id" label="#" width="40"></el-table-column>
-          <el-table-column prop="date" label="属性名称" width="180"></el-table-column>
-          <el-table-column prop="name" label="属性值" width="480"></el-table-column>
-          <el-table-column prop="address" label="操作"></el-table-column>
+        <el-table :data="staticData" border style="width: 100%">
+          <el-table-column type="index" width="50"></el-table-column>
+          <el-table-column prop="attr_name" label="属性名称" width="180"></el-table-column>
+          <el-table-column prop="attr_vals" label="属性值" width="480"></el-table-column>
+          <el-table-column prop="option" label="操作">
+            <template slot-scope="scope">
+              <!-- 编辑 -->
+              <el-button type="primary" icon="el-icon-edit" plain size="mini"></el-button>
+              <!-- 删除 -->
+              <el-button type="danger" icon="el-icon-delete" plain size="mini"></el-button>
+            </template>
+          </el-table-column>
         </el-table>
       </el-tab-pane>
     </el-tabs>
@@ -74,300 +84,81 @@
 </template>
 
 <script>
-import {http} from '../api/http';
+import { http } from "../api/http";
 export default {
+  name: "params",
   data() {
     return {
-      // 动态数据
-      tableData: [
-        {
-          date: "版式"
-        }
-      ],
+      // 动态参数数据
+      dynaData: [],
+      // 静态参数数据
+      staticData: [],
       // 标签数据
-      dynamicTags: ["aa", "bb", "cc"],
+      tagLists: ["aa", "bb", "cc"],
       inputVisible: false,
+      // 添加标签
       inputValue: "",
       // 标签页
-      activeName: "first",
+      activeName: "first", // 默认显示动态数据
       value: [],
-      // 级联选择器数据
-      options: [
-        {
-          value: "zhinan",
-          label: "指南",
-          children: [
-            {
-              value: "shejiyuanze",
-              label: "设计原则",
-              children: [
-                {
-                  value: "yizhi",
-                  label: "一致"
-                },
-                {
-                  value: "fankui",
-                  label: "反馈"
-                },
-                {
-                  value: "xiaolv",
-                  label: "效率"
-                },
-                {
-                  value: "kekong",
-                  label: "可控"
-                }
-              ]
-            },
-            {
-              value: "daohang",
-              label: "导航",
-              children: [
-                {
-                  value: "cexiangdaohang",
-                  label: "侧向导航"
-                },
-                {
-                  value: "dingbudaohang",
-                  label: "顶部导航"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          value: "zujian",
-          label: "组件",
-          children: [
-            {
-              value: "basic",
-              label: "Basic",
-              children: [
-                {
-                  value: "layout",
-                  label: "Layout 布局"
-                },
-                {
-                  value: "color",
-                  label: "Color 色彩"
-                },
-                {
-                  value: "typography",
-                  label: "Typography 字体"
-                },
-                {
-                  value: "icon",
-                  label: "Icon 图标"
-                },
-                {
-                  value: "button",
-                  label: "Button 按钮"
-                }
-              ]
-            },
-            {
-              value: "form",
-              label: "Form",
-              children: [
-                {
-                  value: "radio",
-                  label: "Radio 单选框"
-                },
-                {
-                  value: "checkbox",
-                  label: "Checkbox 多选框"
-                },
-                {
-                  value: "input",
-                  label: "Input 输入框"
-                },
-                {
-                  value: "input-number",
-                  label: "InputNumber 计数器"
-                },
-                {
-                  value: "select",
-                  label: "Select 选择器"
-                },
-                {
-                  value: "cascader",
-                  label: "Cascader 级联选择器"
-                },
-                {
-                  value: "switch",
-                  label: "Switch 开关"
-                },
-                {
-                  value: "slider",
-                  label: "Slider 滑块"
-                },
-                {
-                  value: "time-picker",
-                  label: "TimePicker 时间选择器"
-                },
-                {
-                  value: "date-picker",
-                  label: "DatePicker 日期选择器"
-                },
-                {
-                  value: "datetime-picker",
-                  label: "DateTimePicker 日期时间选择器"
-                },
-                {
-                  value: "upload",
-                  label: "Upload 上传"
-                },
-                {
-                  value: "rate",
-                  label: "Rate 评分"
-                },
-                {
-                  value: "form",
-                  label: "Form 表单"
-                }
-              ]
-            },
-            {
-              value: "data",
-              label: "Data",
-              children: [
-                {
-                  value: "table",
-                  label: "Table 表格"
-                },
-                {
-                  value: "tag",
-                  label: "Tag 标签"
-                },
-                {
-                  value: "progress",
-                  label: "Progress 进度条"
-                },
-                {
-                  value: "tree",
-                  label: "Tree 树形控件"
-                },
-                {
-                  value: "pagination",
-                  label: "Pagination 分页"
-                },
-                {
-                  value: "badge",
-                  label: "Badge 标记"
-                }
-              ]
-            },
-            {
-              value: "notice",
-              label: "Notice",
-              children: [
-                {
-                  value: "alert",
-                  label: "Alert 警告"
-                },
-                {
-                  value: "loading",
-                  label: "Loading 加载"
-                },
-                {
-                  value: "message",
-                  label: "Message 消息提示"
-                },
-                {
-                  value: "message-box",
-                  label: "MessageBox 弹框"
-                },
-                {
-                  value: "notification",
-                  label: "Notification 通知"
-                }
-              ]
-            },
-            {
-              value: "navigation",
-              label: "Navigation",
-              children: [
-                {
-                  value: "menu",
-                  label: "NavMenu 导航菜单"
-                },
-                {
-                  value: "tabs",
-                  label: "Tabs 标签页"
-                },
-                {
-                  value: "breadcrumb",
-                  label: "Breadcrumb 面包屑"
-                },
-                {
-                  value: "dropdown",
-                  label: "Dropdown 下拉菜单"
-                },
-                {
-                  value: "steps",
-                  label: "Steps 步骤条"
-                }
-              ]
-            },
-            {
-              value: "others",
-              label: "Others",
-              children: [
-                {
-                  value: "dialog",
-                  label: "Dialog 对话框"
-                },
-                {
-                  value: "tooltip",
-                  label: "Tooltip 文字提示"
-                },
-                {
-                  value: "popover",
-                  label: "Popover 弹出框"
-                },
-                {
-                  value: "card",
-                  label: "Card 卡片"
-                },
-                {
-                  value: "carousel",
-                  label: "Carousel 走马灯"
-                },
-                {
-                  value: "collapse",
-                  label: "Collapse 折叠面板"
-                }
-              ]
-            }
-          ]
-        },
-        {
-          value: "ziyuan",
-          label: "资源",
-          children: [
-            {
-              value: "axure",
-              label: "Axure Components"
-            },
-            {
-              value: "sketch",
-              label: "Sketch Templates"
-            },
-            {
-              value: "jiaohu",
-              label: "组件交互文档"
-            }
-          ]
-        }
-      ]
+      // 级联选择器 渲染数据
+      options: [],
+      // 选择数据
+      selectedOptions: [],
+      // 动态数据
+      selName: "many"
     };
   },
   methods: {
-    handleChange(value) {
-      // console.log(value);
+    // 获取商品参数
+    getTagTable() {
+      // tab为动态参数
+      if (this.activeName == "first") {
+        http
+          .get(`categories/${this.selectedOptions[2]}/attributes`, {
+            params: {
+              sel: "many"
+            }
+          })
+          .then(backData => {
+            // console.log(backData);
+            // 动态参数数据
+            this.dynaData = backData.data.data;
+          });
+      } else {
+        http
+          .get(`categories/${this.selectedOptions[2]}/attributes`, {
+            params: {
+              sel: "only"
+            }
+          })
+          .then(backData => {
+            // console.log(backData);
+            // 静态参数数据
+            this.staticData = backData.data.data;
+          });
+      }
     },
-    handleClose(tag) {
-      this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
+    // 点击切换 tab栏
+    tagChange() {
+      this.getTagTable();
+    },
+    handleClose(row, index) {
+      const arr = row.attr_vals.split(",");
+      arr.splice(index, 1);
+      const postData = {};
+      postData.attr_name = row.attr_name;
+      postData.attr_sel = row.attr_sel;
+      postData.attr_vals = arr.join(",");
+      const url = `/categories/${row.cat_id}/attributes/${row.attr_id}`;
+      http.put(url, postData).then(backData => {
+        console.log(backData);
+        if (backData.data.meta.status === 200) {
+          this.$message.success("更新成功");
+        } else {
+          this.$message.error("更新失败");
+        }
+      });
     },
     showInput() {
       this.inputVisible = true;
@@ -375,13 +166,18 @@ export default {
         this.$refs.saveTagInput.$refs.input.focus();
       });
     },
-    handleInputConfirm() {
+    handleInputConfirm(row) {
       let inputValue = this.inputValue;
       if (inputValue) {
-        this.dynamicTags.push(inputValue);
+        this.tagLists.push(inputValue);
       }
       this.inputVisible = false;
       this.inputValue = "";
+    },
+    // 级联选择 下拉框改变
+    handleChange() {
+      // 获取商品参数
+      this.getTagTable();
     }
   },
   created() {
@@ -393,14 +189,14 @@ export default {
         }
       })
       .then(bcakData => {
-        console.log(bcakData);
-        // this.tableData = bcakData.data.data;
+        // console.log(bcakData);
+        this.options = bcakData.data.data;
       });
   }
 };
 </script>
 
-<style lang='less' scpoed>
+<style lang='less' scoped>
 .alert_msg {
   height: 40px;
   margin-top: 20px;

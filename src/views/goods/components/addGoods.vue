@@ -83,7 +83,7 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .my_alert {
   margin: 20px auto;
 }
@@ -92,5 +92,8 @@ export default {
 }
 .my_tabs {
   overflow: unset;
+}
+.ql-editor p{
+  height: 300px;
 }
 </style>
